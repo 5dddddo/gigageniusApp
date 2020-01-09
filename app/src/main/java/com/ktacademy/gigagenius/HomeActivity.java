@@ -28,7 +28,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
-    private BackPressCloseHandler backPressCloseHandler;
     private TextView actionbar_text;
     private MemberVO vo;
     private ImageButton logoutBtn;
@@ -41,7 +40,6 @@ public class HomeActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.actionbar);
         actionbar_text = (TextView) findViewById(R.id.actionbar_text);
         setContentView(R.layout.activity_home);
-        backPressCloseHandler = new BackPressCloseHandler(this);
         logoutBtn = (ImageButton) findViewById(R.id.logoutBtn);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(listener);
@@ -87,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
                         editor.clear();
                         editor.commit();
                         RealService.logoutIntent.putExtra("key", "1");
-                        startActivity(new Intent(getApplicationContext(), Main2Activity.class));
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         HomeActivity.this.finish();
                     }
                 });
@@ -137,12 +135,6 @@ public class HomeActivity extends AppCompatActivity {
         transaction.replace(R.id.frag_content, fragment);
         transaction.commit();
     }
-
-    @Override
-    public void onBackPressed() {
-        backPressCloseHandler.onBackPressed();
-    }
-
 
     @Override
     public void onDestroy() {

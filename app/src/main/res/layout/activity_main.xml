@@ -99,7 +99,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/addUserBtn"
+                android:id="@+id/registerBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#0048A7"

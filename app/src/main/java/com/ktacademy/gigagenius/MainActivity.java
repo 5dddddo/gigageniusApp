@@ -10,12 +10,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
+
     private Intent intent;
 
     String member_id;
@@ -29,10 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button loginBtn = (Button) findViewById(R.id.loginBtn);
-        Button findIdPwBtn = (Button) findViewById(R.id.findIdPwBtn);
-        Button addUserBtn = (Button) findViewById(R.id.addUserBtn);
-
-        backPressCloseHandler = new BackPressCloseHandler(this);
+        Button registerBtn = (Button) findViewById(R.id.registerBtn);
 
         final EditText idEditView = (EditText) findViewById(R.id.idEditView);
         final EditText pwEditView = (EditText) findViewById(R.id.pwEditView);
@@ -52,30 +55,30 @@ public class MainActivity extends AppCompatActivity {
                                 String url = "http://70.12.115.73:9090/Chavis/Member/login.do";
                                 HttpUtils http = new HttpUtils(HttpUtils.POST, map, url, getApplicationContext());
                                 res = http.request();
+                                Log.i("MemberLoginError", res);
                             } catch (Exception e) {
                                 Log.i("MemberLoginError", e.toString());
                             }
                         }
                     };
                     t.start();
+
                     try {
                         t.join();
                         ObjectMapper mapper = new ObjectMapper();
                         vo = mapper.readValue(res, MemberVO.class);
-                        if (vo.getCode().equals("200")) {
-
+                        // 바꿔바꿔
+                        if (vo.equals("200")) {
                             // 자동 로그인 등록
                             SharedPreferences preferences = getSharedPreferences("preferences", MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("mjyObect", res);
-                            editor.commit();
-                            Log.i("LOGIN_ADD_SharedPref", "로그인 객체 저장 성공");
 
+                            editor.putString("myObject", res);
+                            editor.commit();
                             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
                             i.putExtra("vo", vo);
                             i.putExtra("fragment", "login");
                             startActivity(i);
-                            MainActivity.this.finish();
                         } else {
                             Toast.makeText(getApplicationContext(), "로그인 실패", Toast.LENGTH_SHORT).show();
                         }
@@ -96,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        addUserBtn.setOnClickListener(new View.OnClickListener() {
+        registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 회원가입
@@ -107,21 +110,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findIdPwBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //  ID/PW 찾기
-                Intent i = new Intent(
-                        getApplicationContext(),// Activiey Context
-                        FindIdPwActivity.class);
-                startActivity(i);
-            }
-        });
     }
+
 
     @Override
-    public void onBackPressed() {
-        backPressCloseHandler.onBackPressed();
+    protected void onDestroy() {
+        super.onDestroy();
+
+
     }
 
-}
+}}
